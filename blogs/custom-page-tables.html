@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Title — MattRWX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .blog-post {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .blog-post h2 {
+            color: #a855f7;
+            margin-bottom: 10px;
+        }
+
+        .blog-post .date {
+            color: #a1a1a1;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .blog-post p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .blog-post a {
+            color: #c084fc;
+            text-decoration: none;
+        }
+
+        .blog-post a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #a855f7;
+            transform: translateX(3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="content blog-post">
+        <h1>Custom Page Tables</h1>
+        <span class="date">Published on Feb 8, 2026</span>
+
+        <p>
+          In the journey of computer science education, the topic of virtual and physical memory should appear at some point. Probably in the context of an operating systems class. The process a CPU does when given a virtual address is very interesting. In this blog I will explain how we can use the knowledge of this process to do some very tricky things in a Windows driver.
+        </p>
+        <p>
+          Even though I will be briefly going through this, It would make the most sense to get some background knowledge on virtual to physical memory translation. I read chapter 5 of the AMD architecture programmers manual before starting this project.
+        </p>
+        <p>
+          When a virtual address is passed from the CPU to the MMU, if the MMU does not have the translation cached in the TLB, it will read CR3 (Control Register 3) which contains the page frame number of the PML4. This PML4 is walked using the virtual address, then the MMU will be able to read from RAM. But what would happen if you modified the entries to your page table?
+        </p>
+        <p>
+          I started by getting an unused page, copying over the contents from a system page, which was on a 4kb page. Next, I changed the page frame number of the last page table so that it points to my cloned page instead of the original system page. This allowed me to inline patch the page without triggering PatchGuard. Except after a couple seconds to minutes PG still triggered. I was curious because surely PatchGuard wasn’t protecting my clone page right? So, I tried remapping the table without modifying the page. PG triggered again. Interestingly, PG wasn’t just protecting pages, but page tables themselves.
+        </p>
+        <p>
+          What if I don’t modify the system’s page tables, and clone the page tables as well. All the way up to the PML4. This would stop PatchGuard from triggering. The one thing is that I must tell my CPU to use my new page tables. This can be done by taking the page frame number of my cloned page tables, and then manually write over the value in my CR3. This can be done using the __writecr3() function that the WDK provides. I tested this out with fully custom page tables, and was no longer getting blasted by PG, even when modifying the clone page. The limitation to this is that these modifications are only visible when your CR3 value is present, meaning that other threads will not see these modifications. This is actually a good thing in a sense, because it makes it a lot more stealthy. I didn’t like that some Window’s API functions I would call tracked my usage in logs or other things. So if I could take these functions and overwrite their calls to logger functions and force them to call dummy functions I created.
+        </p>
+        <p>
+          Another thought, If I have control over the page tables, couldn’t I map in pages of something like a usermode process that I wouldn’t normally have access to? I can, and as a matter of fact I even found that I can map an entire usermode process's pml4 into my pml4 and have access to BOTH virtual address spaces. This completely bypasses the need for functions like MmCopyVirtualMemory, and not to mention the physical counterpart MmCopyMemory. I could literally cast a pointer and dereference to read from a targeted usermode process. Even call a function of the process, even byte patch that function before calling it.
+        </p>
+        <p>
+          This clearly shows the absolute power of custom page tables. It’s something that has really captured my attention and I would love to continue to push the limits things like this and continue to learn about other powerful topics.
+        </p>
+        
+        <p><a href="blogs.html">← Back to Blogs</a></p>
+        <p><a href="../index.html">← Back to Home</a></p>
+    </div>
+</body>
+</html>
 
