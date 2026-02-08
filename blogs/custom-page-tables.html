@@ -6,14 +6,20 @@
     <title>Blog Title — MattRWX</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
-    <style>
+        <style>
+        /* Fix global flex centering ONLY for this page */
+        body {
+            justify-content: flex-start;
+            height: auto;
+        }
+
         .blog-post {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 60px auto;
             text-align: left;
         }
 
-        .blog-post h2 {
+        .blog-post h1 {
             color: #a855f7;
             margin-bottom: 10px;
         }
@@ -21,7 +27,7 @@
         .blog-post .date {
             color: #a1a1a1;
             font-size: 0.9em;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             display: block;
         }
 
