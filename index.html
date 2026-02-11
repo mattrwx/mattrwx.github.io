@@ -1,23 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MattRWX's GitHub Page</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <!-- External CSS -->
+    <title>MattRWX</title>
+    <meta name="description" content="MattRWX - Computer Science Student & Systems Architecture Enthusiast">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(220 20% 4%)',
+                        foreground: 'hsl(270 60% 90%)',
+                        primary: 'hsl(270 91% 65%)',
+                        secondary: 'hsl(220 16% 12%)',
+                        card: 'hsl(220 18% 7%)',
+                        muted: 'hsl(220 14% 10%)',
+                        'muted-foreground': 'hsl(220 10% 50%)',
+                        accent: 'hsl(270 95% 75%)',
+                        border: 'hsl(270 30% 18%)',
+                        'terminal-dim': 'hsl(270 15% 35%)',
+                    },
+                    keyframes: {
+                        gridBreathe: {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '0.6' },
+                            '50%': { transform: 'scale(1.05)', opacity: '0.9' },
+                        }
+                    },
+                    animation: {
+                        'grid-breathe': 'gridBreathe 20s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="content">
-        <h1>MattRWX</h1>
-        <ul>
-            <li><a href="https://github.com/mattrwx/mattrwx.github.io/blob/main/README.md">About me</a></li>
-            <li><a href="https://github.com/mattrwx?tab=repositories">Projects</a></li>
-            <li><a href="https://mattrwx.github.io/blogs/blogs.html">Blogs</a></li>
-            <li><a href="https://www.youtube.com/@mattrwx/videos">YouTube</a></li>
-        </ul>
+
+<body
+    class="bg-background text-foreground min-h-screen flex flex-col items-center justify-center relative overflow-x-hidden font-['Space_Grotesk']">
+
+    <div class="grid-background fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div
+            class="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_30%,#000_75%)]">
+        </div>
+        <svg class="absolute w-full h-full opacity-80 animate-grid-breathe" viewBox="0 0 960 637" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <g stroke="white" stroke-opacity="0.1" stroke-width="0.5">
+                <line x1="123.5" y1="0" x2="123.5" y2="637" />
+                <line x1="202.5" y1="0" x2="202.5" y2="637" />
+                <line x1="281.5" y1="0" x2="281.5" y2="637" />
+                <line x1="360.5" y1="0" x2="360.5" y2="637" />
+                <line x1="439.5" y1="0" x2="439.5" y2="637" />
+                <line x1="518.5" y1="0" x2="518.5" y2="637" />
+                <line x1="597.5" y1="0" x2="597.5" y2="637" />
+                <line x1="676.5" y1="0" x2="676.5" y2="637" />
+                <line x1="755.5" y1="0" x2="755.5" y2="637" />
+                <line x1="834.5" y1="0" x2="834.5" y2="637" />
+                <line x1="0" y1="41.5" x2="960" y2="41.5" />
+                <line x1="0" y1="120.5" x2="960" y2="120.5" />
+                <line x1="0" y1="199.5" x2="960" y2="199.5" />
+                <line x1="0" y1="278.5" x2="960" y2="278.5" />
+                <line x1="0" y1="357.5" x2="960" y2="357.5" />
+                <line x1="0" y1="436.5" x2="960" y2="436.5" />
+                <line x1="0" y1="515.5" x2="960" y2="515.5" />
+            </g>
+        </svg>
     </div>
+
+    <div id="loader"
+        class="loader-overlay fixed inset-0 bg-background z-[9999] flex items-center justify-center transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]">
+        <div class="text-center w-[250px]">
+            <div class="font-mono-jb text-sm text-primary mb-6 tracking-[0.2em] font-mono">MATTHEW ONLYFANS...
+            </div>
+            <div class="w-full h-1 bg-secondary rounded-full overflow-hidden mb-4">
+                <div id="loader-bar"
+                    class="h-full bg-primary rounded-full transition-all duration-300 ease-out shadow-[0_0_15px_hsl(270,91%,65%)]"
+                    style="width: 0%"></div>
+            </div>
+            <div id="loader-percent" class="font-mono-jb text-xs text-terminal-dim font-mono">0% COMPLETE</div>
+        </div>
+    </div>
+
+    <div id="content" class="relative z-10 w-full max-w-[50rem] mx-auto px-6 py-8 opacity-0">
+        <header class="text-center mb-12">
+            <div class="flex justify-center mb-6">
+                <img id="logo" src="mattrwx.png" alt="MattRWX"
+                    class="max-h-[100px] w-auto opacity-0 transition-all duration-400" />
+            </div>
+            <div class="font-mono-jb text-[0.95rem] text-muted-foreground min-h-[1.25rem] mt-4 font-mono">
+                <span id="typing-text"></span><span class="text-primary typing-cursor">█</span>
+            </div>
+        </header>
+
+        <main id="dashboard" class="mt-10 hidden">
+            <section
+                class="tile-glow relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 mb-5 flex flex-col gap-4 transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] opacity-0"
+                data-index="0">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">ABOUT_ME.MD</span>
+                    <span class="font-mono text-[0.65rem] font-bold text-primary animate-pulse">[MATTRWX]</span>
+                </div>
+                <p class="font-mono text-[0.95rem] leading-relaxed text-secondary-foreground">
+                    Hi I'm Matt, a computer science student with a passion for <span class="text-primary">low-level
+                        programming</span>, <span class="text-primary">computer / system architecture</span>.
+                </p>
+            </section>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <a href="https://github.com/mattrwx?tab=repositories" target="_blank"
+                    class="tile-glow group relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col gap-4 no-underline transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:bg-secondary/40 opacity-0"
+                    data-index="1">
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m7.5 4.27 9 5.15" />
+                                <path
+                                    d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                <path d="m3.3 7 8.7 5 8.7-5" />
+                                <path d="M12 22V12" />
+                            </svg>
+                        </span>
+                        <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">PROJECTS</span>
+                    </div>
+                    <div class="mt-auto">
+                        <span
+                            class="font-mono text-[0.7rem] text-terminal-dim group-hover:text-primary transition-colors duration-300">VIEW
+                            REPOS →</span>
+                    </div>
+                </a>
+
+                <a href="blogs/blogs.html"
+                    class="tile-glow group relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col gap-4 no-underline transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:bg-secondary/40 opacity-0"
+                    data-index="2">
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg>
+                        </span>
+                        <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">BLOGS</span>
+                    </div>
+                    <div class="mt-auto">
+                        <span
+                            class="font-mono text-[0.7rem] text-terminal-dim group-hover:text-primary transition-colors duration-300">READ
+                            ENTRIES →</span>
+                    </div>
+                </a>
+
+                <a href="https://www.youtube.com/@mattrwx/videos" target="_blank"
+                    class="tile-glow group relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col gap-4 no-underline transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:bg-secondary/40 opacity-0"
+                    data-index="3">
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2A29 29 0 0 0 23 11.75a29 29 0 0 0-.46-5.33z" />
+                                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                            </svg>
+                        </span>
+                        <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">YOUTUBE</span>
+                    </div>
+                    <div class="mt-auto">
+                        <span
+                            class="font-mono text-[0.7rem] text-terminal-dim group-hover:text-primary transition-colors duration-300">WATCH
+                            NOW →</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/mattrwx" target="_blank"
+                    class="tile-glow group relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col gap-4 no-underline transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:bg-secondary/40 opacity-0"
+                    data-index="4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path
+                                    d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                                <path d="M9 18c-4.51 2-5-2-7-2" />
+                            </svg>
+                        </span>
+                        <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">GITHUB</span>
+                    </div>
+                    <div class="mt-auto">
+                        <span
+                            class="font-mono text-[0.7rem] text-terminal-dim group-hover:text-primary transition-colors duration-300">FOLLOW
+                            DEV →</span>
+                    </div>
+                </a>
+
+                <a href="https://github.com/mattrwx/mattrwx.github.io/blob/main/README.md" target="_blank"
+                    class="tile-glow group relative overflow-hidden rounded-lg border border-border bg-card/70 backdrop-blur-xl p-5 flex flex-col gap-4 no-underline transition-all duration-500 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:bg-secondary/40 opacity-0"
+                    data-index="5">
+                    <div class="flex items-center gap-3">
+                        <span class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="16" x2="12" y2="12" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                        </span>
+                        <span class="font-mono text-[0.7rem] text-muted-foreground tracking-wider">IDENTITY</span>
+                    </div>
+                    <div class="mt-auto">
+                        <span
+                            class="font-mono text-[0.7rem] text-terminal-dim group-hover:text-primary transition-colors duration-300">README.md
+                            →</span>
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        <footer id="footer" class="mt-12 text-center font-mono text-xs text-muted-foreground opacity-0">
+            <span class="text-terminal-dim">©</span> 2026 matt · MIT License
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
 </body>
+
 </html>

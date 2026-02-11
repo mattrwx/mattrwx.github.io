@@ -1,22 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MattRWX's Blogs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <title>Blogs — MattRWX</title>
     <link rel="stylesheet" href="../style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(220 20% 4%)',
+                        foreground: 'hsl(270 60% 90%)',
+                        primary: 'hsl(270 91% 65%)',
+                        secondary: 'hsl(220 16% 12%)',
+                        card: 'hsl(220 18% 7%)',
+                        muted: 'hsl(220 14% 10%)',
+                        'muted-foreground': 'hsl(220 10% 50%)',
+                        accent: 'hsl(270 95% 75%)',
+                        border: 'hsl(270 30% 18%)',
+                        'terminal-dim': 'hsl(270 15% 35%)',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="content">
-        <h1>My Blogs</h1>
-        <ul>
-            <li>
-                <a href="custom-page-tables.html">Custom Page Tables</a>
-                <span class="date">— Feb 8, 2026</span>
-            </li>
-        </ul>
-        <p><a href="../index.html">← Back to Home</a></p>
+
+<body
+    class="bg-background text-foreground min-h-screen flex flex-col items-center relative overflow-x-hidden font-['Space_Grotesk']">
+
+    <div class="grid-background fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div
+            class="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_30%,#000_75%)]">
+        </div>
+        <svg class="absolute w-full h-full opacity-30" viewBox="0 0 960 637" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <g stroke="white" stroke-opacity="0.1" stroke-width="0.5">
+                <line x1="123.5" y1="0" x2="123.5" y2="637" />
+                <line x1="202.5" y1="0" x2="202.5" y2="637" />
+                <line x1="281.5" y1="0" x2="281.5" y2="637" />
+                <line x1="360.5" y1="0" x2="360.5" y2="637" />
+                <line x1="439.5" y1="0" x2="439.5" y2="637" />
+                <line x1="0" y1="41.5" x2="960" y2="41.5" />
+                <line x1="0" y1="120.5" x2="960" y2="120.5" />
+                <line x1="0" y1="199.5" x2="960" y2="199.5" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="relative z-10 w-full max-w-[50rem] mx-auto px-6 py-16">
+        <header class="mb-12">
+            <div class="flex items-center gap-4 mb-2">
+                <a href="../index.html" class="text-primary hover:text-accent transition-colors font-mono text-sm">←
+                    SYSTEM_ROOT</a>
+            </div>
+            <h1 class="text-4xl font-bold tracking-tight text-foreground font-mono">MY_BLOGS.MD</h1>
+            <div class="h-1 w-20 bg-primary mt-4 rounded-full"></div>
+        </header>
+
+        <main class="space-y-6">
+            <a href="custom-page-tables.html" class="block group">
+                <div
+                    class="p-6 rounded-lg border border-border bg-card/70 backdrop-blur-xl transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.05)] group-hover:-translate-y-1">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2
+                            class="text-xl font-bold text-foreground group-hover:text-primary transition-colors font-mono">
+                            Custom Page Tables</h2>
+                        <span class="text-xs text-terminal-dim font-mono">Feb 8, 2026</span>
+                    </div>
+                    <p class="text-muted-foreground text-sm leading-relaxed mb-4">
+                        Exploring the power of virtual to physical memory translation in Windows drivers, and how to use
+                        custom page tables to bypass security features.
+                    </p>
+                    <div
+                        class="flex items-center text-xs font-mono text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                        READ_ENTRY.SH →
+                    </div>
+                </div>
+            </a>
+        </main>
+
+        <footer class="mt-20 text-center font-mono text-xs text-muted-foreground">
+            <span class="text-terminal-dim">©</span> 2026 matt · Blog Module
+        </footer>
     </div>
 </body>
+
 </html>
