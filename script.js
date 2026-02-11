@@ -1,4 +1,4 @@
-const TYPING_TEXT = "flushing tlb and praying to allah for no page fault";
+const TYPING_TEXT = "Welcome, I'm Matt.";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
 
 
 
