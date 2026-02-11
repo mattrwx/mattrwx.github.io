@@ -1,4 +1,4 @@
-const TYPING_TEXT = "Certified Bluescreener...";
+const TYPING_TEXT = "Flushing TLB and praying to Allah for no page fault";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
@@ -76,4 +76,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
 
