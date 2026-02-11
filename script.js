@@ -1,4 +1,4 @@
-const TYPING_TEXT = "certified faggott who watches furry gay porn...";
+const TYPING_TEXT = "Certified Bluescreener...";
 
 document.addEventListener('DOMContentLoaded', () => {
     const loader = document.getElementById('loader');
@@ -76,3 +76,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
