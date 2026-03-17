@@ -79,9 +79,47 @@
 
 <pre class="w-full max-w-full overflow-x-auto rounded-lg">
   <code class="language-cpp text-[12px] leading-snug">
-      int main(){
-        return 0;
-      }
+BOOL ReadFile_hk(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped) {
+    WaitForSingleObject(some_mutex, 0xFFFFFFFF);
+    WriteProcessMemory(GetCurrentProcess(), read_file_hook.targetAddress, &read_file_hook.originalBytes, 0xC, 0);
+
+    bool result = ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
+    WriteProcessMemory(GetCurrentProcess(), read_file_hook.targetAddress, &read_file_hook.stubMovRax, 0xC, 0);
+
+    if (lpNumberOfBytesRead && *lpNumberOfBytesRead)
+        ReadFile_total_bytes_read += *lpNumberOfBytesRead;
+
+    ++ReadFile_total_calls;
+
+    ReleaseMutex(some_mutex);
+    return result;
+}
+
+BOOL Hook_ReadFile()
+{
+    HMODULE ModuleHandleW = GetModuleHandleW(L"Kernel32.dll");
+    FARPROC ReadFile_addr = GetProcAddress(ModuleHandleW, "ReadFile");
+
+    std::printf("Hook ReadFile, Addr = 0x%p\n", ReadFile_addr);
+
+    DWORD flOldProtect;
+    VirtualProtect(ReadFile_addr, 0xC, PAGE_EXECUTE_READWRITE, &flOldProtect);
+
+    read_file_hook.targetAddress = ReadFile_addr;
+    read_file_hook.originalBytes = *(std::uint64_t*)ReadFile_addr;
+    read_file_hook.originalNext = *((std::uint64_t*)ReadFile_addr + 2);
+    read_file_hook.stubMovRax = 0xB848;
+    read_file_hook.hookAddress = ReadFile_hk;
+    read_file_hook.stubPushRet = 0xC350;
+    
+    /*
+    mov rax, ReadFile_hk
+    push rax
+    ret
+    */
+
+    return WriteProcessMemory(GetCurrentProcess(), ReadFile_addr, &read_file_hook.stubMovRax, 0xC, 0LL);
+}
   </code>
 </pre>
 
