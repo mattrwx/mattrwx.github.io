@@ -74,7 +74,10 @@
                 but are loaded in during runtime as a dll. However, thanks to the brilliant minds at NetEase, the anti-cheat is right there embedded in the main binary. And, in case your expectations
                 aren't already low, let me lower them further, it's completely unprotected; Practically open source.
             </p>
-            <code>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<pre><code class="language-cpp">
 BOOL ReadFile_hk(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped) {
     WaitForSingleObject(some_mutex, 0xFFFFFFFF);
     WriteProcessMemory(GetCurrentProcess(), read_file_hook.targetAddress, &read_file_hook.originalBytes, 0xC, 0);
@@ -116,7 +119,11 @@ BOOL Hook_ReadFile()
 
     return WriteProcessMemory(GetCurrentProcess(), ReadFile_addr, &read_file_hook.stubMovRax, 0xC, 0LL);
 }
-            </code>
+</code></pre>
+
+<script>
+  hljs.highlightAll();
+</script>
             <p>
                 So, in the code above you will see how the anti-cheat has decided to place some hooks. It will overwrite the start of the function it is targeting (in this case ReadFile).
                 But majority of the time code is going to be in a read only section, so the function's page's protection to PAGE_EXECUTE_READWRITE. And byte patching the start of the function
