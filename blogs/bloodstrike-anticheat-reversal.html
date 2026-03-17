@@ -66,7 +66,68 @@
         <main
             class="prose prose-invert prose-purple max-w-none font-mono text-[0.95rem] leading-relaxed text-secondary-foreground space-y-6">
             <p>
-                Test
+                The game BloodStrike by NetEase Games was recommended to me by a friend. Something I am very interested in about every game I play is the game engine and the anti-cheat.
+                When loading up bloodstrike I not only didn't see any popular game engine logos (like Unity or Unreal Engine), but I also didn't recognize anything anti-cheat related.
+                After a short period of time in IDA Pro it's very easy to find the name "Messiah" appear in strings of the main binary of the game. Why are these strings not cleared? Not quite sure.
+                But it give's a good look at the structure of the game engine and many interesting classes that I may or may not reverse in the future. I know the game has an anti-cheat (because I
+                was banned for using a well known 3rd party dynamic analysis tool). But I don't know where this anti-cheat lives. Most modern anti-cheats are not a part of the main binary of the game,
+                but are loaded in during runtime as a dll. However, thanks to the brilliant minds at NetEase, the anti-cheat is right there embedded in the main binary. And, in case your expectations
+                aren't already low, let me lower them further, it's completely unprotected; Practically open source.
+            </p>
+            <code>
+BOOL ReadFile_hk(HANDLE hFile, LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped) {
+    WaitForSingleObject(some_mutex, 0xFFFFFFFF);
+    WriteProcessMemory(GetCurrentProcess(), read_file_hook.targetAddress, &read_file_hook.originalBytes, 0xC, 0);
+
+    bool result = ReadFile(hFile, lpBuffer, nNumberOfBytesToRead, lpNumberOfBytesRead, lpOverlapped);
+    WriteProcessMemory(GetCurrentProcess(), read_file_hook.targetAddress, &read_file_hook.stubMovRax, 0xC, 0);
+
+    if (lpNumberOfBytesRead && *lpNumberOfBytesRead)
+        ReadFile_total_bytes_read += *lpNumberOfBytesRead;
+
+    ++ReadFile_total_calls;
+
+    ReleaseMutex(some_mutex);
+    return result;
+}
+
+BOOL Hook_ReadFile()
+{
+    HMODULE ModuleHandleW = GetModuleHandleW(L"Kernel32.dll");
+    FARPROC ReadFile_addr = GetProcAddress(ModuleHandleW, "ReadFile");
+
+    std::printf("Hook ReadFile, Addr = 0x%p\n", ReadFile_addr);
+
+    DWORD flOldProtect;
+    VirtualProtect(ReadFile_addr, 0xC, PAGE_EXECUTE_READWRITE, &flOldProtect);
+
+    read_file_hook.targetAddress = ReadFile_addr;
+    read_file_hook.originalBytes = *(std::uint64_t*)ReadFile_addr;
+    read_file_hook.originalNext = *((std::uint64_t*)ReadFile_addr + 2);
+    read_file_hook.stubMovRax = 0xB848;
+    read_file_hook.hookAddress = ReadFile_hk;
+    read_file_hook.stubPushRet = 0xC350;
+    
+    /*
+    mov rax, ReadFile_hk
+    push rax
+    ret
+    */
+
+    return WriteProcessMemory(GetCurrentProcess(), ReadFile_addr, &read_file_hook.stubMovRax, 0xC, 0LL);
+}
+            </code>
+            <p>
+                So, in the code above you will see how the anti-cheat has decided to place some hooks. It will overwrite the start of the function it is targeting (in this case ReadFile).
+                But majority of the time code is going to be in a read only section, so the function's page's protection to PAGE_EXECUTE_READWRITE. And byte patching the start of the function
+                to the asm in the comment below. If you read the ReadFile_hk function, we can see how they execute the original function. It repairs the function, calls it, saves the return and
+                then patches it again. This is a questionable approach considering it creates a race condition that would make the program unstable if ReadFile is called around the same time in
+                two seperate threads. And the mutex doesn't eliminate this race condition, it only gives better odds. The purpose of this whole hook is to just count how often the function is
+                called and how many bytes are read. This type of hook is used on these functions:
+                - ReadFile (kernel32.dll)
+                - WSARecv (ws2_32.dll)
+                - WSASend (ws2_32.dll)
+                - PyEval_EvalCodeEx (PythonCore_x64h.dll)
             </p>
         </main>
 
@@ -74,7 +135,7 @@
             <a href="blogs.html"
                 class="inline-block text-primary hover:text-accent transition-colors font-mono text-sm underline decoration-primary/30 underline-offset-4">RETURN_TO_ARCHIVE.EXE</a>
             <div class="font-mono text-[10px] text-terminal-dim">
-                © 2026 matt · Memory Architecture Series
+                © 2026 matt · Game Reversal Series
             </div>
         </footer>
     </div>
