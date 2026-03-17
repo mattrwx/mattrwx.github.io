@@ -133,10 +133,12 @@ BOOL Hook_ReadFile()
                 then patches it again. This is a questionable approach considering it creates a race condition that would make the program unstable if ReadFile is called around the same time in
                 two seperate threads. And the mutex doesn't eliminate this race condition, it only gives better odds. The purpose of this whole hook is to just count how often the function is
                 called and how many bytes are read. This type of hook is used on these functions:
-                - ReadFile (kernel32.dll)
-                - WSARecv (ws2_32.dll)
-                - WSASend (ws2_32.dll)
-                - PyEval_EvalCodeEx (PythonCore_x64h.dll)
+                <ul class="list-disc ml-6">
+                    <li>ReadFile (kernel32.dll)</li>
+                    <li>WSARecv (ws2_32.dll)</li>
+                    <li>WSASend (ws2_32.dll)</li>
+                    <li>PyEval_EvalCodeEx (PythonCore_x64h.dll)</li>
+                </ul>
             </p>
         </main>
 
