@@ -145,15 +145,29 @@ BOOL Hook_ReadFile()
                 into some array. Then a CreateFileW call which is how a connection can be established from usermode to a driver through IOCTL. We know this is the disk driver becuase of the strings
                 we just saw. Next, we see a DeviceIoControl call to this driver. This is cut and clear, this is fetching some sort of information off of disk driver.
             </p>
-            <img src="https://gcdnb.pbrd.co/images/4dRqndM2903v.png?o=1" alt="Physical Devices">
+            <img src="https://gcdnb.pbrd.co/images/JjuG9hWAm3Of.png?o=1" alt="Physical Devices">
             <p>
                 Someone trying to defeat this tracing functionality might thing of well known methods for disk spoofing like redirecting the IOCTL calls to this driver to a custom driver that
                 intercepts these IOCTL requests before deciding to forward them to the driver or handle them itself. However, I think this may be overkill. There is hooking being done on the DeviceIoControl
                 function. And I have yet to find any detection mechanisms responsible for hashing and validating the modules. So by simply hooking the DeviceIoControl function you can avoid the syscall as
-                a whole and just return fabricated information.
+                a whole and just return fabricated information. This goes for ALL of the DeviceIoControl checks.
             </p>
             <p>
                 Also, as a side note, this is atrocious programming. Why are we hardcoding the paths for disk drive 0-3, have we not yet learned what a for loop is?
+            </p>
+            <p>
+                Next, let's take a look at one of their functions that is supposed to scan external processes. This function is a masterpiece. I've rebuilt this in C++ to make it clear, but this function basically uses,
+                EnumProcesses. Then looping through those processes. In this loop they are ensuring they can open a handle with PROCESS_ALL_ACCESS. Checking if EnumProcessModules fails when they try to fetch the
+                first module. And lastly, checking if GetModuleBaseNameW on that first module fails. It saves this name for later. However, if your process fails these checks, it will simply skip over you. Once
+                it finds a valid external process to investigate, it will break out of the loop (meaning this is the only process it will investigate) and do some stuff like hashing, checking window names, etc.
+            </p>
+            <img src="https://gcdnb.pbrd.co/images/HkZwitxakwq0.png?o=1" alt="Goat Function">
+            <p>
+                Whoever wrote this function needs to be fired immediately. It would be a struggle to even get your process to get investigated. There are so many ways to avoid getting looked at, all you have to
+                do is just not let your program pass the first set of tests. The easiest way would be to just disallow for a PROCESS_ALL_ACCESS handle to be opened to your program with DACL manipulation.
+            </p>
+            <p>
+                Like I said before, I know for a fact that they do the bare minimum and detect Cheat Engine, so I went to find that function. Once I found one function that caches the window names,
             </p>
         </main>
 
