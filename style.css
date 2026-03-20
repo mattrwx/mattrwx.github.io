@@ -112,11 +112,3 @@ body::after {
 .footer-reveal-anim {
   animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-
-pre {
-  line-height: 1.5;
-  font-family: inherit;
-  font-size: inherit;
-  margin: 0.5rem 0;
-  white-space: pre-wrap;
-}
