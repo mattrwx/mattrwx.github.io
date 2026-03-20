@@ -112,6 +112,24 @@ Internal Cheat Detection Related Observations:</p>
                     This is not ALL of the features, only the ones I've analyzed. 
                 </i></b>
             </p>
+            <p>
+                After reversing all of these functions. I've noticed there are critical vulnerabilities in the anti-cheat. Here are some:
+                
+                They completely ignore external processes who cannot have a handle with PROCESS_ALL_ACCESS opened. They don't even log the failures like I said above. A program could easily set protection settings that
+                disallow for this type of handle from being opened and completely avoid being investigated by the anti-cheat.
+
+                They also are only interested in the first module of external applications, they completely ignore the dlls loaded. If an external cheat is compliled as a dll and injected into a legitamate process, it will
+                completely be unseen.
+
+                Another issue is that they are hashing the entire file on disk as opposed to specific sections like the .text or better yet maybe things like file metadata. In the current state, the hash will be completely
+                different by a single bit being flipped.
+
+                During their scan for suspicious memory ranges within their address space. They completely skip over ranges that don't meet a rediculously specific criteria, including MEM_PRIVATE ranges. Meaning a
+                threat actor can just set their allocation to be MEM_PRIVATE and go completely under the radar.
+
+                Though there are plenty more things that could be mocked in this anti-cheat, I will leave it with the last major vulnerability which is one of the most important aspects of all anti-cheats. Which is
+                code obfuscation. They made no attempt in obfuscating any of this code which just allows any random person who knows how to use a disassembler to take apart this anti-cheat.
+            </p>
         </main>
 
         <footer class="mt-20 border-t border-border pt-10 text-center space-y-4">
