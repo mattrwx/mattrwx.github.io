@@ -71,40 +71,41 @@
                 After a short period of time in IDA Pro it's very easy to find the name "Messiah" appear in strings of the main binary of the game. Why are these strings not cleared? Not quite sure.
                 Anyways, after reversing it's some of it's anti-cheat attempts, here is what I've found:
             </p>
-<p>1. Internal Cheat Detection Related Observations:</p>
+            <p>
+Internal Cheat Detection Related Observations:</p>
 <pre style="white-space: pre-wrap; line-height: 1.5; font-family: inherit; font-size: inherit; margin: 0.75rem 0; padding: 1rem; background: hsl(220 18% 7%); border: 1px solid hsl(270 30% 18%); border-left: 3px solid hsl(270 91% 65%); border-radius: 4px;">
-Checking if d3d11.dll pointers point outside of d3d11.dll address range.
+1. Checking if d3d11.dll pointers point outside of d3d11.dll address range.
 
-Checking if d3d11.dll WinVerifyTrust returns non-zero.
+2. Checking if d3d11.dll WinVerifyTrust returns non-zero.
 
-Checking if IsDebuggerPresent returns non-zero.
+3. Checking if IsDebuggerPresent returns non-zero.
 
-Hooking ReadFile, WSASend, WSARecv, and PyEval_EvalCodeEx, D3DCompile to monitor how many times each function has been called as well as how many bytes have been transferred in the case of ReadFile. Note, the D3DCompile hook function literally does nothing.
+4. Hooking ReadFile, WSASend, WSARecv, and PyEval_EvalCodeEx, D3DCompile to monitor how many times each function has been called as well as how many bytes have been transferred in the case of ReadFile. Note, the D3DCompile hook function literally does nothing.
 
-VirtualQuery is used in only one active function to scan the virtual memory of the game. It will completely skip over memory regions that are not MEM_COMMIT, that are MEM_PRIVATE, that are exactly PAGE_SIZE, or that are not executable. It creates a python list object and fills it with the regions it thinks are suspicious.
+5. VirtualQuery is used in only one active function to scan the virtual memory of the game. It will completely skip over memory regions that are not MEM_COMMIT, that are MEM_PRIVATE, that are exactly PAGE_SIZE, or that are not executable. It creates a python list object and fills it with the regions it thinks are suspicious.
 
-Calls K32GetProcessMemoryInfo and logs the WorkingSetSize. This can be used to compare to the amount of memory they are querying in the future to see if they are actually querying the entire virtual address space.
+6. Calls K32GetProcessMemoryInfo and logs the WorkingSetSize. This can be used to compare to the amount of memory they are querying in the future to see if they are actually querying the entire virtual address space.
 
-Module32FirstW / Module32NextW is used to create a list of module names, paths, base addresses, and sizes.
+7. Module32FirstW / Module32NextW is used to create a list of module names, paths, base addresses, and sizes.
 </pre>
 
-<p>2. External Cheat Detection Related Observations:</p>
+<p>External Cheat Detection Related Observations:</p>
 <pre style="white-space: pre-wrap; line-height: 1.5; font-family: inherit; font-size: inherit; margin: 0.75rem 0; padding: 1rem; background: hsl(220 18% 7%); border: 1px solid hsl(270 30% 18%); border-left: 3px solid hsl(270 91% 65%); border-radius: 4px;">
-Enumerating all processes and grabbing the module name of the first module, any window names, the process id, and an MD5 hash of the file on disk. Some things to note is that if OpenProcess fails, the failure is not tracked (aside from the entry being missing in the log). Another thing to notice is that it is only targeting the first module of the program.
+1. Enumerating all processes and grabbing the module name of the first module, any window names, the process id, and an MD5 hash of the file on disk. Some things to note is that if OpenProcess fails, the failure is not tracked (aside from the entry being missing in the log). Another thing to notice is that it is only targeting the first module of the program.
 
-Thread32First / Thread32Next is used to loop through all the threads on the system, but only storing the thread id. In other points NtQueryInformationThread is called to fetch things like the start address of the thread and the module who it belongs to.
+2. Thread32First / Thread32Next is used to loop through all the threads on the system, but only storing the thread id. In other points NtQueryInformationThread is called to fetch things like the start address of the thread and the module who it belongs to.
 </pre>
 
-<p>3. Device Finger Printing:</p>
+<p>Device Finger Printing:</p>
 <pre style="white-space: pre-wrap; line-height: 1.5; font-family: inherit; font-size: inherit; margin: 0.75rem 0; padding: 1rem; background: hsl(220 18% 7%); border: 1px solid hsl(270 30% 18%); border-left: 3px solid hsl(270 91% 65%); border-radius: 4px;">
-Accessing dwOemId and dwNumberOfProcessors from GetNativeSystemInfo.
+1. Accessing dwOemId and dwNumberOfProcessors from GetNativeSystemInfo.
 
-DeviceIoControl is called targeting "\\\\.\\PhysicalDrive0" through "\\\\.\\PhysicalDrive3".
+2. DeviceIoControl is called targeting "\\\\.\\PhysicalDrive0" through "\\\\.\\PhysicalDrive3".
 </pre>
 
 <p>Misc:</p>
-<pre style="white-space: pre-wrap; line-height: 1.5; font-family: inherit; font-size: inherit; margin: 0.75rem 0; padding: 1rem; background: hsl(220 18% 7%); border: 1px solid hsl(270 30% 18%); border-left: 3px solid hsl(270 91% 65%); border-radius: 4px;">
-Fetches the file path of the main game module, they might be checking the files in the directory who knows.
+<pre style="white-space: pre-wrap; line-height: 1.5; font-family: inherit; font-size: inherit; margin: 0.75rem 0; padding: 1rem; background: hsl(220 18% 7%); border: 1px solid hsh(270 30% 18%); border-left: 3px solid hsl(270 91% 65%); border-radius: 4px;">
+1. Fetches the file path of the main game module, they might be checking the files in the directory who knows.
 </pre>
             <p>
                 <b><i>
