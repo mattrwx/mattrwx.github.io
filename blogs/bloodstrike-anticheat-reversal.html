@@ -120,15 +120,15 @@ Internal Cheat Detection Related Observations:</p>
                 disallow for this type of handle from being opened and completely avoid being investigated by the anti-cheat.
             </p>
             <p>
-                They also are only interested in the first module of external applications, they completely ignore the dlls loaded. If an external cheat is compliled as a dll and injected into a legitamate process, it will
+                They also are only interested in the first module of external applications, they completely ignore the dlls loaded. If an external cheat is compiled as a dll and injected into a legitimate process, it will
                 completely be unseen.
             </p>
             <p>
                 Another issue is that they are hashing the entire file on disk as opposed to specific sections like the .text or better yet maybe things like file metadata. In the current state, the hash will be completely
-                different by a single bit being flipped.
+                different by a single bit being flipped anywhere in the binary on disk.
             </p>
             <p>
-                During their scan for suspicious memory ranges within their address space. They completely skip over ranges that don't meet a rediculously specific criteria, including MEM_PRIVATE ranges. Meaning a
+                During their scan for suspicious memory ranges within their address space. They completely skip over ranges that don't meet a ridiculously specific criteria, including MEM_PRIVATE ranges. Meaning a
                 threat actor can just set their allocation to be MEM_PRIVATE and go completely under the radar.
             </p>
             <p>
