@@ -4,67 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Page Tables — MattRWX</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f3f3">
+    <title>Custom Page Tables &#8212; MattRWX</title>
+    <meta name="description" content="Exploring the power of virtual to physical memory translation in Windows drivers, and how to use custom page tables to bypass security features.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600&amp;display=swap">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: 'hsl(220 20% 4%)',
-                        foreground: 'hsl(270 60% 90%)',
-                        primary: 'hsl(270 91% 65%)',
-                        secondary: 'hsl(220 16% 12%)',
-                        card: 'hsl(220 18% 7%)',
-                        muted: 'hsl(220 14% 10%)',
-                        'muted-foreground': 'hsl(220 10% 50%)',
-                        accent: 'hsl(270 95% 75%)',
-                        border: 'hsl(270 30% 18%)',
-                        'terminal-dim': 'hsl(270 15% 35%)',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
-<body
-    class="bg-background text-foreground min-h-screen flex flex-col items-center relative overflow-x-hidden font-['Space_Grotesk']">
-
-    <div class="grid-background fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div
-            class="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_30%,#000_75%)]">
+<body>
+    <header class="titlebar">
+        <div class="titlebar__inner">
+            <a class="brand" href="../index.html" aria-label="MattRWX home">
+                <img class="brand__icon" src="../favicon.svg" alt="" width="20" height="20">
+                <span class="wordmark">Matt<span class="wordmark__accent">RWX</span></span>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav__link" href="../index.html">Home</a>
+                <a class="nav__link" href="blogs.html" aria-current="page">Blog</a>
+            </nav>
         </div>
-        <svg class="absolute w-full h-full opacity-20" viewBox="0 0 960 637" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <g stroke="white" stroke-opacity="0.1" stroke-width="0.5">
-                <line x1="123.5" y1="0" x2="123.5" y2="637" />
-                <line x1="202.5" y1="0" x2="202.5" y2="637" />
-                <line x1="281.5" y1="0" x2="281.5" y2="637" />
-                <line x1="360.5" y1="0" x2="360.5" y2="637" />
-                <line x1="439.5" y1="0" x2="439.5" y2="637" />
-            </g>
-        </svg>
-    </div>
+    </header>
 
-    <div class="relative z-10 w-full max-w-[50rem] mx-auto px-6 py-16">
-        <header class="mb-12">
-            <div class="flex items-center gap-4 mb-2">
-                <a href="blogs.html" class="text-primary hover:text-accent transition-colors font-mono text-sm">←
-                    BACK_TO_BLOGS</a>
-            </div>
-            <h1 class="text-4xl font-bold tracking-tight text-foreground font-mono mb-4">Custom Page Tables</h1>
-            <div class="flex items-center gap-4 text-xs font-mono text-terminal-dim">
-                <span>AUTHOR: Matthew Dominguez</span>
-                <span>•</span>
-                <span>DATE: Feb 8, 2026</span>
-            </div>
-            <div class="h-1 w-20 bg-primary mt-6 rounded-full"></div>
-        </header>
+    <main class="page">
+        <div class="breadcrumb">
+            <nav aria-label="Breadcrumb"><a href="blogs.html">Blog</a></nav>
+            <svg class="breadcrumb__sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <h1 class="breadcrumb__current">Custom Page Tables</h1>
+        </div>
+        <div class="article__meta">
+            <span>Matthew Dominguez</span>
+            <span class="article__meta-sep">&#183;</span>
+            <span>Feb 8, 2026</span>
+            <span class="article__meta-sep">&#183;</span>
+            <span>Memory Architecture Series</span>
+        </div>
 
-        <main
-            class="prose prose-invert prose-purple max-w-none font-mono text-[0.95rem] leading-relaxed text-secondary-foreground space-y-6">
+        <article class="article">
             <p>
                 In the journey of computer science education, the topic of virtual and physical memory should appear at
                 some point. Probably in the context of an operating systems class. The process a CPU does when given a
@@ -116,16 +98,20 @@
                 attention and I would love to continue to push the limits things like this and continue to learn about
                 other powerful topics.
             </p>
-        </main>
+        </article>
 
-        <footer class="mt-20 border-t border-border pt-10 text-center space-y-4">
-            <a href="blogs.html"
-                class="inline-block text-primary hover:text-accent transition-colors font-mono text-sm underline decoration-primary/30 underline-offset-4">RETURN_TO_ARCHIVE.EXE</a>
-            <div class="font-mono text-[10px] text-terminal-dim">
-                © 2026 matt · Memory Architecture Series
-            </div>
-        </footer>
-    </div>
+        <div class="article__footer">
+            <a class="button" href="blogs.html">
+                <svg class="button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg>
+                Back to blog
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">&#169; 2026 Matt &#183; MIT License</footer>
 </body>
 
 </html>
