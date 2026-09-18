@@ -4,107 +4,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogs — MattRWX</title>
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f3f3">
+    <title>Blog — MattRWX</title>
+    <meta name="description" content="Write-ups by MattRWX on Windows internals, memory architecture, and reverse engineering.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600&amp;display=swap">
     <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        background: 'hsl(220 20% 4%)',
-                        foreground: 'hsl(270 60% 90%)',
-                        primary: 'hsl(270 91% 65%)',
-                        secondary: 'hsl(220 16% 12%)',
-                        card: 'hsl(220 18% 7%)',
-                        muted: 'hsl(220 14% 10%)',
-                        'muted-foreground': 'hsl(220 10% 50%)',
-                        accent: 'hsl(270 95% 75%)',
-                        border: 'hsl(270 30% 18%)',
-                        'terminal-dim': 'hsl(270 15% 35%)',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 
-<body
-    class="bg-background text-foreground min-h-screen flex flex-col items-center relative overflow-x-hidden font-['Space_Grotesk']">
-
-    <div class="grid-background fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div
-            class="absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_30%,#000_75%)]">
+<body>
+    <header class="titlebar">
+        <div class="titlebar__inner">
+            <a class="brand" href="../index.html" aria-label="MattRWX home">
+                <img class="brand__icon" src="../favicon.svg" alt="" width="20" height="20">
+                <span class="wordmark">Matt<span class="wordmark__accent">RWX</span></span>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav__link" href="../index.html">Home</a>
+                <a class="nav__link" href="blogs.html" aria-current="page">Blog</a>
+            </nav>
         </div>
-        <svg class="absolute w-full h-full opacity-30" viewBox="0 0 960 637" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <g stroke="white" stroke-opacity="0.1" stroke-width="0.5">
-                <line x1="123.5" y1="0" x2="123.5" y2="637" />
-                <line x1="202.5" y1="0" x2="202.5" y2="637" />
-                <line x1="281.5" y1="0" x2="281.5" y2="637" />
-                <line x1="360.5" y1="0" x2="360.5" y2="637" />
-                <line x1="439.5" y1="0" x2="439.5" y2="637" />
-                <line x1="0" y1="41.5" x2="960" y2="41.5" />
-                <line x1="0" y1="120.5" x2="960" y2="120.5" />
-                <line x1="0" y1="199.5" x2="960" y2="199.5" />
-            </g>
-        </svg>
-    </div>
+    </header>
 
-    <div class="relative z-10 w-full max-w-[50rem] mx-auto px-6 py-16">
-        <header class="mb-12">
-            <div class="flex items-center gap-4 mb-2">
-                <a href="../index.html" class="text-primary hover:text-accent transition-colors font-mono text-sm">←
-                    SYSTEM_ROOT</a>
-            </div>
-            <h1 class="text-4xl font-bold tracking-tight text-foreground font-mono">MY_BLOGS.MD</h1>
-            <div class="h-1 w-20 bg-primary mt-4 rounded-full"></div>
-        </header>
+    <main class="page">
+        <div class="breadcrumb">
+            <nav aria-label="Breadcrumb"><a href="../index.html">Home</a></nav>
+            <svg class="breadcrumb__sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <h1 class="breadcrumb__current">Blog</h1>
+        </div>
+        <p class="page-subtitle">Write-ups on Windows internals, memory architecture, and reverse engineering.</p>
 
-        <main class="space-y-6">
-            <a href="custom-page-tables.html" class="block group">
-                <div
-                    class="p-6 rounded-lg border border-border bg-card/70 backdrop-blur-xl transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.05)] group-hover:-translate-y-1">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2
-                            class="text-xl font-bold text-foreground group-hover:text-primary transition-colors font-mono">
-                            Custom Page Tables</h2>
-                        <span class="text-xs text-terminal-dim font-mono">Feb 8, 2026</span>
-                    </div>
-                    <p class="text-muted-foreground text-sm leading-relaxed mb-4">
-                        Exploring the power of virtual to physical memory translation in Windows drivers, and how to use
-                        custom page tables to bypass security features.
-                    </p>
-                    <div
-                        class="flex items-center text-xs font-mono text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        READ_ENTRY.SH →
-                    </div>
-                </div>
+        <div class="card-list">
+            <a class="settings-card post-card" href="why-your-external-read-write-method-is-probably-detected.html">
+                <svg class="settings-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+                <span class="settings-card__text">
+                    <span class="settings-card__title">Why your external read/write "method" is probably detected</span>
+                    <span class="settings-card__desc">Why the usual ways of reading and writing another process's memory get caught by modern anti-cheats.</span>
+                    <span class="post-card__date">Aug 17, 2026</span>
+                </span>
+                <svg class="settings-card__action" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
             </a>
-            <a href="bloodstrike-anticheat-reversal.html" class="block group">
-                <div
-                    class="p-6 rounded-lg border border-border bg-card/70 backdrop-blur-xl transition-all duration-300 group-hover:border-primary/40 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.05)] group-hover:-translate-y-1">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2
-                            class="text-xl font-bold text-foreground group-hover:text-primary transition-colors font-mono">
-                            BloodStrike Anti Cheat Vulnerability Research</h2>
-                        <span class="text-xs text-terminal-dim font-mono">March 17, 2026</span>
-                    </div>
-                    <p class="text-muted-foreground text-sm leading-relaxed mb-4">
-                        Exploring the Anti-Cheating measures put in place by the developers of BloodStrike. Identifying vulnerabilities and analyzing routines.
-                    </p>
-                    <div
-                        class="flex items-center text-xs font-mono text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        READ_ENTRY.SH →
-                    </div>
-                </div>
-            </a>
-        </main>
 
-        <footer class="mt-20 text-center font-mono text-xs text-muted-foreground">
-            <span class="text-terminal-dim">©</span> 2026 matt · Blog Module
-        </footer>
-    </div>
+            <a class="settings-card post-card" href="bloodstrike-anticheat-reversal.html">
+                <svg class="settings-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+                <span class="settings-card__text">
+                    <span class="settings-card__title">BloodStrike Anti Cheat Vulnerability Research</span>
+                    <span class="settings-card__desc">Exploring the Anti-Cheating measures put in place by the developers of BloodStrike. Identifying vulnerabilities and analyzing routines.</span>
+                    <span class="post-card__date">March 17, 2026</span>
+                </span>
+                <svg class="settings-card__action" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </a>
+
+            <a class="settings-card post-card" href="custom-page-tables.html">
+                <svg class="settings-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+                <span class="settings-card__text">
+                    <span class="settings-card__title">Custom Page Tables</span>
+                    <span class="settings-card__desc">Exploring the power of virtual to physical memory translation in Windows drivers, and how to use custom page tables to bypass security features.</span>
+                    <span class="post-card__date">Feb 8, 2026</span>
+                </span>
+                <svg class="settings-card__action" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">© 2026 Matt · MIT License</footer>
 </body>
 
 </html>

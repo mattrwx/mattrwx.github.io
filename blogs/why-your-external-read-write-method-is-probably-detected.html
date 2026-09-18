@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f3f3">
+    <title>Why your external read/write "method" is probably detected &#8212; MattRWX</title>
+    <meta name="description" content="Why the usual ways of reading and writing another process's memory get caught by modern anti-cheats.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600&amp;display=swap">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <header class="titlebar">
+        <div class="titlebar__inner">
+            <a class="brand" href="../index.html" aria-label="MattRWX home">
+                <img class="brand__icon" src="../favicon.svg" alt="" width="20" height="20">
+                <span class="wordmark">Matt<span class="wordmark__accent">RWX</span></span>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav__link" href="../index.html">Home</a>
+                <a class="nav__link" href="blogs.html" aria-current="page">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="breadcrumb">
+            <nav aria-label="Breadcrumb"><a href="blogs.html">Blog</a></nav>
+            <svg class="breadcrumb__sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <h1 class="breadcrumb__current">Why your external read/write "method" is probably detected</h1>
+        </div>
+        <div class="article__meta">
+            <span>Matthew Dominguez</span>
+            <span class="article__meta-sep">&#183;</span>
+            <span>Aug 17, 2026</span>
+        </div>
+
+        <article class="article">
+            <p>
+                For a cheat to read from a game, most people have the game's page mapped into their page tables, even if they don't know how this works. Anti-Cheats can and [bold]do[/bold] manually walk all the page tables they can to see if pages that belong to the game they are protecting are mapped in. You can try to cause a race condition by constantly unmapping and remapping those pages, however that's a ticking time bomb and not scalable. Even if you are never touching the page tables yourself, functions like MmMapIoSpace and MmCopyMemory are doing it for you.
+            </p>
+
+            <p>
+                Loading a vulnerable driver to perform your read and writes don't matter, because they are still mapping the pages into kernel space. Anti-cheats aren't relying on the who, they are mostly looking on the what. Though there are pages that are shared between processes, a legitimate process will likely NEVER have a writable page from your game's heap mapped in.
+            </p>
+
+            <p>
+                You can try to construct your own PML4 and hide it somehow, but some anti-cheats have been reported to walk all physical memory pages on the system and brute force translations or the self-referencing PML4 entry.
+            </p>
+
+            <p>
+                Let's say you've cleared your PML4 from all operating system structures, like EPROCESS, and have also somehow perfectly hidden the pml4, you still have interrupts to worry about. A well-known interrupt that anti-cheats use are NMIs, however there are many interrupts that can be arbitrarily sent to your core via APIC or forced upon you like page faults. If an interrupt hits your core while your hidden page tables are loaded, then you have been exposed.
+            </p>
+
+            <p>
+                The truth is that it's not 2014 anymore, some anti-cheats are really smart.
+            </p>
+        </article>
+
+        <div class="article__footer">
+            <a class="button" href="blogs.html">
+                <svg class="button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg>
+                Back to blog
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">&#169; 2026 Matt &#183; MIT License</footer>
+</body>
+
+</html>
