@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f3f3">
+    <title>Hooking Write-Up &#8212; MattRWX</title>
+    <meta name="description" content="What hooking is, with a rundown of inline, exception, pointer swap, and hypervisor (SLAT) hooks.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600&amp;display=swap">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <header class="titlebar">
+        <div class="titlebar__inner">
+            <a class="brand" href="../index.html" aria-label="MattRWX home">
+                <img class="brand__icon" src="../favicon.svg" alt="" width="20" height="20">
+                <span class="wordmark">Matt<span class="wordmark__accent">RWX</span></span>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav__link" href="../index.html">Home</a>
+                <a class="nav__link" href="blogs.html" aria-current="page">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="breadcrumb">
+            <nav aria-label="Breadcrumb"><a href="blogs.html">Blog</a></nav>
+            <svg class="breadcrumb__sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <h1 class="breadcrumb__current">Hooking Write-Up</h1>
+        </div>
+        <div class="article__meta">
+            <span>Matthew Dominguez</span>
+            <span class="article__meta-sep">&#183;</span>
+            <span>Sep 17, 2026</span>
+        </div>
+
+        <article class="article">
+            <p>
+                Hooking is forcing your code to be ran on targeted events. Having special code run when a function occurs / data is accessed / etc.
+            </p>
+
+            <h2>1. Inline hook</h2>
+            <p>
+                Byte patching code, forcing control flow to your function. The issue with overwriting code is that the anti-cheat can compare the executable section on disk to the section on ram and see a difference. However, in some cases, there are PE's that unpack executable sections in runtime which can make it hard for an anti-cheat to compare the sections. In 2026, inline hooking is unlikely to survive a modern anti-cheat. Generally, this is not done in the kernel because patch guard is designed to stop this.
+            </p>
+
+            <h2>2. Exception hooking</h2>
+            <p>
+                Forcing an exception during some event and catching the exception in an exception handler. This can be done by byte patching, like throwing some instruction at the beginning of a function that will throw an exception. However, that carries the same detection vectors as inline hooking. Other approaches to getting an exception to run would be corrupting memory addresses that a program dereferences at a specific point, or changing page protections, both of these approaches allowing you to hook both code and data access. However, the cool thing about this is that when an exception occurs, is that the cpu will switch to kernel mode before running any user mode exception related code. So, if you hook from the kernel, you never have to have shellcode in the user mode program. If you are targeting a game with a fully user mode anti-cheat, this may be viable. Say, "lets corrupt the pointer to our deduct_health(player* p, int amount) method, and then every time the exception is thrown, our kernel module will catch it, set rdx to 0, and then restore execution without going to any user mode exception handler". Exception hooking can also be done to kernel modules, which can be good for reverse engineering but being patch guard compliant is important, and most kernel anti cheats are going to be hard to hide this from.
+            </p>
+
+            <h2>3. Pointer Swap</h2>
+            <p>
+                Changing a function pointer to your function. The .data section is writeable, and a lot of the information in there is not comparable to disk (if it was, in most cases it would be in the .rdata section). Not all pointer swaps are done in the .data section, some objects contain callback pointers, etc. This is one of the interesting ones; anti cheats are unable to validate every single .data pointer on your system. However, it's possible that they validate every function pointer in their game. The cool thing about pointer swaps is that they are generally quite patch guard compliant. You can literally overwrite driver major function pointers without triggering patch guard.
+            </p>
+
+            <h2>4. SLAT / Hypervisor hooking</h2>
+            <p>
+                Second layer address translation is only available to hypervisors. To conceptualize this, understand the difference between virtual and physical memory, and how virtual addresses can be translated to physical addresses. Now, imagine a second layer of page tables only visible to hypervisors that do another level of translation for the guest's physical pages to get to the true hardware physical pages. This means you can invalidate a translation on the second layer, that appears perfectly valid to the guest, and then when the guest accesses data from that page or tries to execute from that page a VM exit occurs and the hypervisor gets control. This is very similar so far to Exception hooking; however, there's more. VM exits can occur (depending on configuration) in many cases, like exceptions, and special instructions. Anti-cheats are able to configure VM exits on every mov to a control register for example, which can help a cheat get the game's cr3 value by monitoring every mov cr3 instruction. Hypervisor detection is quite rigorous, but I don't want to talk about that, I want to talk about detecting the hooks specifically. VM exits occur legitimately, and the guest should not have access to even see the VM exit handler, meaning the only way to prevent this is by detecting the malicious hypervisor. EPT hooking however has been known to be detected by weird behavior in instructions that allow a guest to see if a memory access will fail without throwing an exception, an example being a GitHub project "VPGATHEr" by Peribunt.
+            </p>
+        </article>
+
+        <div class="article__footer">
+            <a class="button" href="blogs.html">
+                <svg class="button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg>
+                Back to blog
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">&#169; 2026 Matt &#183; MIT License</footer>
+</body>
+
+</html>
