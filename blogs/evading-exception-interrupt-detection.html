@@ -61,7 +61,6 @@
                 Overwriting the IDT is not going to work. Not only does PatchGuard (<a href="https://en.wikipedia.org/wiki/Kernel_Patch_Protection">KPP</a>) protect the IDT, but the IDT is a global page; which means the anti-cheat can audit these modifications. How about cloning the IDT to a different page that PatchGuard doesn't monitor, patching our desired handlers, then writing the virtual address of this page to the IDTR. This is a better approach, but there are still some implications that will arise later.
             </p>
 
-            <h2>The Abort Mission Approach</h2>
             <p>
                 The way that I have defeated exceptions like pagefaults or general protection faults requires two stubs that look like this.
             </p>
@@ -82,17 +81,14 @@ abort:
                 Now, if a pagefault occurs, in the handler we can simply move the RIP from the safecopy function to the abort function. Which will tell the caller that a pagefault occurred meaning the buffer contains unknown data. Since we handled our own exception, there is no way for the anti-cheat to know anything occurred on the processor. One note to add is that the Control Register 2 contains the virtual address of the last page fault, so maybe clear it in your handler &#x1F61B;.
             </p>
 
-            <h2>Dealing with NMIs</h2>
             <p>
                 This "abort mission" style approach to exceptions is cool, however, there are scenarios where you should not abort mission. Welcome to the stage, the NMI. NMIs are a type of interrupt that is non-maskable. Meaning, "This interrupt will occur right here right now I don't care what you have going on." There are times where NMIs will not run, like if an NMI is already running. Blocking an NMI might be fine, but when the anti-cheat sends 400 NMIs back to back to your core and zero of them run, they will know what is up. People have also tried rerouting NMIs to other cores, which is a funny method that probably worked for a short period of time. Nowadays, the only real viable solution is to let that mother fucker run. How are NMIs used you may ask, well an anti-cheat will register a callback that the NMI handler will execute, which means they literally get to run on your core in your context. They can see your control registers, stack, IDTR, etc. When leveraging our IDT hook, we can first take control of the execution, and write a little context spoofer. Clear sketchy return addresses on the stack, move our instruction pointer out of our driver, and most importantly restore the IDTR. Once we have cleaned up our mess, we will jmp, not call, to the original handler which will eventually run the callback. When they check the state, there will be nothing out of the ordinary.
             </p>
 
-            <h2>The IRET Problem</h2>
             <p>
                 This is where the big hacker skills come out. What happens when the NMI routine has finished and it's time to IRET? The CPU state that you just spoofed needs to be able to run. Except this time you don't have your IDTR control. Meaning if they send another NMI from this point until the time you can restore your IDTR, you are pants down. The reason I say big hacker skills is because I will unfortunately not be giving any sauce regarding this. There are plenty of ways of working with this, and that is your job to find your own unique method!
             </p>
 
-            <h2>CLI/STI and the Interrupt Flag</h2>
             <p>
                 Lastly, let's talk about our beloved cli/sti instructions. CLI is our clear interrupt flag (IF) instruction and STI is our set interrupt flag instruction. When you have the interrupt flag cleared, you are no longer allowing for maskable interrupts to run on your core, which includes the Windows scheduler trying to steal your precious execution when it feels like you've had enough time on core.
             </p>
