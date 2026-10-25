@@ -49,17 +49,14 @@
                 Anti-cheat systems for video games have been known to leverage interrupts to detect cheat software for a long time. Some people don't know that they also utilize exceptions for the same purpose. Today, I will explore a way that I have avoided these detection routines, and the implications that these evasion practices carry.
             </p>
 
-            <h2>ETW and Low-Level Exception Hooks</h2>
             <p>
                 Event Tracing for Windows (ETW) is a feature of Windows that allows a program to gain telemetry on events occurring in real time on the system. Many exception / interrupt handlers on windows trigger some sort of logging with ETW. Anti-cheats have even been seen using function pointer swaps that get called in exception handling paths to get an even lower level hook on global exceptions; an example being the infamous KdTrap hook.
             </p>
 
-            <h2>The Exception/Interrupt Path</h2>
             <p>
                 What is the path taken when an exception/interrupt occurs on a core. The machine CPU state is pushed to the stack. Then, the IDTR, which is a register holding the virtual address of your IDT, is read. The IDT is simply a 4kb page that acts as a table to map vector numbers to handlers. The vector number for a pagefault is 14. So in this case, the CPU will find the handlers address in table entry 14 and start execution from there. At this point, the operating system has zero clue an exception or interrupt has occurred. There has been no code ran, between the time the CPU stopped executing and the time that the handler starts executing. This means that if we can find a way to hijack this transition, we can potentially handle our own exceptions and interrupts without notifying the OS.
             </p>
 
-            <h2>Hijacking the IDT</h2>
             <p>
                 Overwriting the IDT is not going to work. Not only does PatchGuard (<a href="https://en.wikipedia.org/wiki/Kernel_Patch_Protection">KPP</a>) protect the IDT, but the IDT is a global page; which means the anti-cheat can audit these modifications. How about cloning the IDT to a different page that PatchGuard doesn't monitor, patching our desired handlers, then writing the virtual address of this page to the IDTR. This is a better approach, but there are still some implications that will arise later.
             </p>
