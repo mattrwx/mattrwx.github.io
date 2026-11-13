@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f3f3f3">
+    <title>Shadow Structures &#8212; MattRWX</title>
+    <meta name="description" content="Using shadow structures and encrypted bookkeeping to detect memory aim in video games.">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600&amp;display=swap">
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <header class="titlebar">
+        <div class="titlebar__inner">
+            <a class="brand" href="../index.html" aria-label="MattRWX home">
+                <img class="brand__icon" src="../favicon.svg" alt="" width="20" height="20">
+                <span class="wordmark">Matt<span class="wordmark__accent">RWX</span></span>
+            </a>
+            <nav class="nav" aria-label="Primary">
+                <a class="nav__link" href="../index.html">Home</a>
+                <a class="nav__link" href="blogs.html" aria-current="page">Blog</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="breadcrumb">
+            <nav aria-label="Breadcrumb"><a href="blogs.html">Blog</a></nav>
+            <svg class="breadcrumb__sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <h1 class="breadcrumb__current">Shadow Structures</h1>
+        </div>
+        <div class="article__meta">
+            <span>Matthew Dominguez</span>
+            <span class="article__meta-sep">&#183;</span>
+            <span>Nov 13, 2026</span>
+        </div>
+
+        <article class="article">
+            <p>
+                Video game cheats who have features that aim at enemies, largely use two methods to move the view angles. The first being mouse aim, which will simulate a fake mouse input. The other approach is memory aim, which involves finding the actual view angle addresses in the program and overwriting them. We will be talking about memory aim in this blog. There are some edge cases to these two categories, like writing to an address that downstream affects the view angles as opposed to directly overwriting the view angles. But the protection routine we will discuss will be applicable to these structures as well.
+            </p>
+
+            <p>
+                The concept of shadow structures was introduced to me by a friend who was reverse engineering a game. I will not be able to point out what games use shadow structures myself since I have never encountered them in any game or anti-cheat I've reverse engineered. Before explaining how shadow structures can be used to detect memory aim, let's talk about the game's threat model.
+            </p>
+
+            <p>
+                We can view all executable data as a black box that cannot be made sense of. The reason for this is because majority of game companies are going to obfuscate their game's code for DRM and anti-cheating purposes.
+            </p>
+
+            <img src="shadow-structures-diagram.webp" alt="Diagram showing game.exe with a .text section and an unknown data section highlighted in blue with question marks, alongside a struct camera definition containing double yaw and double pitch fields">
+
+            <p>
+                The game will be reaching out of its black box to access these view angles, which means that given the address, you could simply read this structure's content. For something like view angles where there are thousands of accesses per frame, like the rendering engine, minimaps, etc, it is too expensive to do something like encrypting and decrypting these values. Reading these values occurs far more frequently than writing to these values, so if we bookkeep every write to these structures we can then go and sanity check them in the future. These bookkeeping values can be encrypted since they are only referenced a couple of times per frame, making it a reasonable performance cost.
+            </p>
+
+            <p>
+                The code could look something like this.
+            </p>
+
+<pre>void camera::update(double new_yaw, double new_pitch)
+{
+	if (decrypt(shadow_camera-&gt;yaw) == this-&gt;yaw)
+		throw "shadow violation";
+
+	if (decrypt(shadow_camera-&gt;pitch) == this-&gt;pitch)
+		throw "shadow violation";
+
+	this-&gt;yaw = new_yaw;
+	this-&gt;pitch = new_pitch;
+
+	shadow_camera-&gt;yaw = encrypt(new_yaw);
+	shadow_camera-&gt;pitch = encrypt(new_pitch);
+}</pre>
+
+            <p>
+                This absolutely carries a performance cost, which is why this cannot be done to every value in the game. However, for something that is known to be used for cheating, like view angles, this is the most efficient passive detection routine I could think of. The only way to fix this would be to reverse engineer the update function and find the encryption/decryption routines and update the shadow structures yourself. However, this creates a race condition between the cheat's writes and the game's reads, potentially exposing a discrepancy between the two structures.
+            </p>
+        </article>
+
+        <div class="article__footer">
+            <a class="button" href="blogs.html">
+                <svg class="button__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m12 19-7-7 7-7" />
+                    <path d="M19 12H5" />
+                </svg>
+                Back to blog
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">&#169; 2026 Matt &#183; MIT License</footer>
+</body>
+
+</html>

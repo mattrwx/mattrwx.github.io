@@ -490,6 +490,14 @@ svg {
   overflow-wrap: anywhere;
 }
 
+.article img {
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 16px;
+  border: 1px solid var(--stroke-card);
+  border-radius: var(--radius-control);
+}
+
 .article__footer {
   margin-top: 32px;
   padding-top: 24px;
